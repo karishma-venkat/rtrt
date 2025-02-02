@@ -1,60 +1,35 @@
-Our Data Architecture
+graph TD;
+    A[Source Systems] -->|Bulk Data| B(S3 API);
+    B --> C[Data Platform];
 
-Source Systems
-   |
-   |--> Bulk (S3 API)
-           |
-           v
-   --------------------------
-   |      Data Platform      |
-   |  --------------------   |
-   |  |      Data Lake   |   |
-   |  |-----------------|   |
-   |  |  S3 Landing     |   |
-   |  |  Area          |   |
-   |  |---------------|   |
-   |  |  S3 Cleansed  |   |
-   |  |  / Enriched   |   |
-   |  |---------------|   |
-   |  |  S3 Analytics |   |
-   |  |  / Reporting  |   |
-   |  --------------------   |
-   |                        |
-   |  --------------------   |
-   |  |  Data Processing  |  |
-   |  |------------------|  |
-   |  |  AWS Glue       |  |
-   |  |  AWS Lambda    |  |
-   |  --------------------   |
-   |                        |
-   |  --------------------   |
-   |  | Data Catalogue   |  |
-   |  | & Classification|  |
-   |  |------------------|  |
-   |  | AWS Glue Data   |  |
-   |  | Catalog        |  |
-   |  --------------------   |
-   --------------------------
+    subgraph C[Data Platform]
+        subgraph D[Data Lake]
+            D1[S3 Landing Area] --> D2[S3 Cleansed/Enriched] --> D3[S3 Analytics/Reporting]
+        end
+        subgraph E[Data Processing]
+            E1[AWS Glue] --> E2[AWS Lambda]
+        end
+        subgraph F[Data Catalogue & Classification]
+            F1[AWS Glue Data Catalog]
+        end
+    end
 
-        AWS Step Functions
-                |
-                v
-   -----------------------------
-   |        Data Flow          |
-   -----------------------------
+    C -->|API| G[Analytical Data Access]
+    G -->|Querying| H[AWS Athena]
+    G -->|Optional| I[Redshift]
 
-   API --> Analytical Data Access
-             |--> AWS Athena
-             |--> Redshift (Optional)
+    subgraph Target_Systems[Target Systems (Analytics)]
+        J[Notebooks (Optional)]
+        K[QuickSight]
+        L[Power BI (Optional)]
+        M[Qlik]
+    end
 
-   AWS Identity & Access Management
+    G --> Target_Systems;
 
-   AWS CloudWatch (Monitoring / Alert)
+    C -->|Step Functions| N[AWS Step Functions]
+    N --> C;
 
-   Target Systems (Analytics)
-     |--> Notebooks (Optional)
-     |--> QuickSight
-     |--> Power BI (Optional)
-     |--> Qlik
+    C -->|Monitoring/Alert| O[AWS CloudWatch]
 
-
+    P[AWS Identity & Access Management] --> C
