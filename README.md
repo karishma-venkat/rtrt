@@ -1,22 +1,60 @@
-# Our Data Architecture
+Our Data Architecture
 
-## Simple Flowchart
+Source Systems
+   |
+   |--> Bulk (S3 API)
+           |
+           v
+   --------------------------
+   |      Data Platform      |
+   |  --------------------   |
+   |  |      Data Lake   |   |
+   |  |-----------------|   |
+   |  |  S3 Landing     |   |
+   |  |  Area          |   |
+   |  |---------------|   |
+   |  |  S3 Cleansed  |   |
+   |  |  / Enriched   |   |
+   |  |---------------|   |
+   |  |  S3 Analytics |   |
+   |  |  / Reporting  |   |
+   |  --------------------   |
+   |                        |
+   |  --------------------   |
+   |  |  Data Processing  |  |
+   |  |------------------|  |
+   |  |  AWS Glue       |  |
+   |  |  AWS Lambda    |  |
+   |  --------------------   |
+   |                        |
+   |  --------------------   |
+   |  | Data Catalogue   |  |
+   |  | & Classification|  |
+   |  |------------------|  |
+   |  | AWS Glue Data   |  |
+   |  | Catalog        |  |
+   |  --------------------   |
+   --------------------------
 
-```mermaid
-graph TD;
-    
-    A[Source Systems] -->|S3 API| B(S3 Bulk Load)
-    B --> C[Landing Area (S3)]
-    C --> D[Cleansed / Enriched Data (S3)]
-    D --> E[Analytics / Reporting (S3)]
+        AWS Step Functions
+                |
+                v
+   -----------------------------
+   |        Data Flow          |
+   -----------------------------
 
-    E -->|Query| F[AWS Athena]
-    E -->|Storage| G[Redshift (Optional)]
-    
-    F --> H[BI Tools (QuickSight, Power BI, Qlik)]
-    G --> H
+   API --> Analytical Data Access
+             |--> AWS Athena
+             |--> Redshift (Optional)
 
-    E --> I[AWS Lambda & Glue Processing]
-    I --> D
+   AWS Identity & Access Management
 
-    E --> J[AWS CloudWatch (Monitoring)]
+   AWS CloudWatch (Monitoring / Alert)
+
+   Target Systems (Analytics)
+     |--> Notebooks (Optional)
+     |--> QuickSight
+     |--> Power BI (Optional)
+     |--> Qlik
+
+
