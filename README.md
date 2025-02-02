@@ -17,9 +17,8 @@ graph TD;
     J -->|Query & Access| K[AWS Athena];
     K -->|Optional| L[Redshift];
 
-    L -->|Visualization| M[QuickSight];
-    L -->|Optional| N[Power BI];
-    L -->|Optional| O[Qlik];
+    L -->|Visualization| M[Power BI];
+    
 
     P[AWS Step Functions] -->|Orchestration| G;
     Q[AWS IAM] -->|Access Management| J;
