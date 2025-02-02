@@ -1,3 +1,5 @@
+
+
 # Our Data Architecture
 
 ## Data Flow Diagram
@@ -6,17 +8,19 @@
 graph TD;
     
     %% Source Systems %%
-    A[Source Systems] -->|S3 API| B(Bulk)
+    A[Source Systems] -->|S3 API| B(Bulk Upload to S3)
 
     %% Data Platform %%
     subgraph "Data Platform"
         subgraph "Data Lake"
-            C1[Landing Area (S3)] --> C2[Cleansed / Enriched (S3)]
-            C2 --> C3[Analytics / Reporting (S3)]
+            C1[Landing Area (S3)]
+            C2[Cleansed / Enriched (S3)]
+            C3[Analytics / Reporting (S3)]
         end
         
         subgraph "Data Processing"
-            D1[AWS Glue] --> D2[AWS Lambda]
+            D1[AWS Glue]
+            D2[AWS Lambda]
         end
         
         subgraph "Data Catalogue & Classification"
@@ -34,11 +38,14 @@ graph TD;
 
     %% Analytical Data Access %%
     subgraph "Analytical Data Access"
-        F1[API] --> F2[AWS Athena]
-        F2 --> F3[Redshift (Optional)]
+        F1[API]
+        F2[AWS Athena]
+        F3[Redshift (Optional)]
     end
 
     C3 -->|Processed Data| F1
+    F1 --> F2
+    F2 --> F3
 
     %% Target Systems %%
     subgraph "Target Systems"
