@@ -1,35 +1,32 @@
+```mermaid
 graph TD;
-    A[Source Systems] -->|Bulk Data| B(S3 API);
-    B --> C[Data Platform];
+    A[Source Systems] -->|Bulk Load| B[S3 API];
+    B --> C[Data Lake];
+    C -->|Raw Data| D[S3 Landing Area];
+    C -->|Cleansed Data| E[S3 Cleansed / Enriched];
+    C -->|Analytics Data| F[S3 Analytics / Reporting];
 
-    subgraph C[Data Platform]
-        subgraph D[Data Lake]
-            D1[S3 Landing Area] --> D2[S3 Cleansed/Enriched] --> D3[S3 Analytics/Reporting]
-        end
-        subgraph E[Data Processing]
-            E1[AWS Glue] --> E2[AWS Lambda]
-        end
-        subgraph F[Data Catalogue & Classification]
-            F1[AWS Glue Data Catalog]
-        end
-    end
+    D -->|Processing| G[AWS Glue];
+    E -->|Processing| G;
+    F -->|Processing| G;
+    G -->|Data Processing| H[AWS Lambda];
 
-    C -->|API| G[Analytical Data Access]
-    G -->|Querying| H[AWS Athena]
-    G -->|Optional| I[Redshift]
+    H -->|Cataloging| I[AWS Glue Data Catalog];
+    I -->|Data Classification| J[Data Catalogue & Classification];
 
-    subgraph Target_Systems[Target Systems (Analytics)]
-        J[Notebooks (Optional)]
-        K[QuickSight]
-        L[Power BI (Optional)]
-        M[Qlik]
-    end
+    J -->|Query & Access| K[AWS Athena];
+    K -->|Optional| L[Redshift];
 
-    G --> Target_Systems;
+    L -->|Visualization| M[QuickSight];
+    L -->|Optional| N[Power BI];
+    L -->|Optional| O[Qlik];
 
-    C -->|Step Functions| N[AWS Step Functions]
-    N --> C;
-
-    C -->|Monitoring/Alert| O[AWS CloudWatch]
-
-    P[AWS Identity & Access Management] --> C
+    P[AWS Step Functions] -->|Orchestration| G;
+    Q[AWS IAM] -->|Access Management| J;
+    R[AWS CloudWatch] -->|Monitoring & Alerts| Q;
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px;
+    style C fill:#bbf,stroke:#333,stroke-width:2px;
+    style G fill:#bfb,stroke:#333,stroke-width:2px;
+    style J fill:#ffb,stroke:#333,stroke-width:2px;
+    style K fill:#fbb,stroke:#333,stroke-width:2px;
