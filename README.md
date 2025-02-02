@@ -9,19 +9,17 @@ graph TD;
     A[Source Systems] -->|S3 API| B(Bulk)
 
     %% Data Platform %%
-    subgraph Data Platform
-        subgraph Data Lake
-            C1[Landing Area (S3)]
-            C2[Cleansed / Enriched (S3)]
-            C3[Analytics / Reporting (S3)]
+    subgraph "Data Platform"
+        subgraph "Data Lake"
+            C1[Landing Area (S3)] --> C2[Cleansed / Enriched (S3)]
+            C2 --> C3[Analytics / Reporting (S3)]
         end
         
-        subgraph Data Processing
-            D1[AWS Glue]
-            D2[AWS Lambda]
+        subgraph "Data Processing"
+            D1[AWS Glue] --> D2[AWS Lambda]
         end
         
-        subgraph Data Catalogue & Classification
+        subgraph "Data Catalogue & Classification"
             E1[AWS Glue Data Catalog]
         end
     end
@@ -35,18 +33,15 @@ graph TD;
     C3 --> E1
 
     %% Analytical Data Access %%
-    subgraph Analytical Data Access
-        F1[API]
-        F2[AWS Athena]
-        F3[Redshift (Optional)]
+    subgraph "Analytical Data Access"
+        F1[API] --> F2[AWS Athena]
+        F2 --> F3[Redshift (Optional)]
     end
 
     C3 -->|Processed Data| F1
-    F1 --> F2
-    F2 --> F3
 
     %% Target Systems %%
-    subgraph Target Systems
+    subgraph "Target Systems"
         G1[Notebooks (Optional)]
         G2[QuickSight]
         G3[Power BI (Optional)]
@@ -59,7 +54,7 @@ graph TD;
     F3 -->|Dashboards| G4
 
     %% Monitoring & Security %%
-    subgraph Monitoring / Security
+    subgraph "Monitoring & Security"
         H1[AWS CloudWatch]
         H2[AWS IAM]
     end
